@@ -6,21 +6,19 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,12 +51,17 @@ fun LoginScreen() {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
-    var loginClicked by remember { mutableStateOf(false) }
-
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+    var showForgotPassword by remember { mutableStateOf(false) }
+    var showSignUp by remember { mutableStateOf(false) }
     val buttonColors = ButtonDefaults.buttonColors(
-        containerColor = Color(0xFFFF9800), // Orange
+        containerColor = Color(0xFFFF9800),
         contentColor = Color.White
     )
+
+    // Dummy credentials
+    val dummyEmail = "user@example.com"
+    val dummyPassword = "password123"
 
     Column(
         modifier = Modifier
@@ -94,11 +97,45 @@ fun LoginScreen() {
             label = { Text("Password") },
             singleLine = true,
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            trailingIcon = {
+                val image = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
+                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                    Icon(imageVector = image, contentDescription = if (passwordVisible) "Hide password" else "Show password")
+                }
+            },
             modifier = Modifier.fillMaxWidth()
         )
-        Spacer(modifier = Modifier.height(32.dp))
+        Spacer(modifier = Modifier.height(8.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End
+        ) {
+            Text(
+                text = "Forgot Password?",
+                color = Color(0xFF1976D2),
+                modifier = Modifier
+                    .clickable { showForgotPassword = true }
+                    .padding(end = 4.dp),
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+        if (errorMessage != null) {
+            Text(
+                text = errorMessage!!,
+                color = Color.Red,
+                modifier = Modifier.padding(top = 8.dp)
+            )
+        }
+        Spacer(modifier = Modifier.height(24.dp))
         Button(
-            onClick = { loginClicked = true },
+            onClick = {
+                // Dummy authentication
+                if (email == dummyEmail && password == dummyPassword) {
+                    errorMessage = "Login successful!"
+                } else {
+                    errorMessage = "Invalid email or password"
+                }
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),
@@ -108,14 +145,47 @@ fun LoginScreen() {
             Text("LOGIN", style = MaterialTheme.typography.titleMedium)
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = "Don't have an account? Sign Up",
-            color = Color(0xFF1976D2),
-            modifier = Modifier
-                .clickable { /* TODO: Navigate to Sign Up */ }
-                .fillMaxWidth(),
-            textAlign = TextAlign.Center
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = "Don't have an account? ",
+                color = Color.Gray,
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Text(
+                text = "Sign Up",
+                color = Color(0xFF1976D2),
+                modifier = Modifier
+                    .clickable { showSignUp = true },
+                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
+            )
+        }
+
+        // Dummy dialogs for "Forgot Password" and "Sign Up"
+        if (showForgotPassword) {
+            Spacer(modifier = Modifier.height(24.dp))
+            Text(
+                text = "Forgot Password clicked (dummy action)",
+                color = Color(0xFFFF9800),
+                modifier = Modifier
+                    .background(Color.White, RoundedCornerShape(8.dp))
+                    .padding(12.dp)
+                    .clickable { showForgotPassword = false }
+            )
+        }
+        if (showSignUp) {
+            Spacer(modifier = Modifier.height(24.dp))
+            Text(
+                text = "Sign Up clicked (dummy action)",
+                color = Color(0xFF1976D2),
+                modifier = Modifier
+                    .background(Color.White, RoundedCornerShape(8.dp))
+                    .padding(12.dp)
+                    .clickable { showSignUp = false }
+            )
+        }
     }
 }
 
