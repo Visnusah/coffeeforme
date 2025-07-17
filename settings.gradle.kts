@@ -19,6 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "coffeeforme"
+rootProject.name = "kotlinsample"
 include(":app")
- 
