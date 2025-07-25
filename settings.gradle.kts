@@ -19,5 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "kotlinsample"
+rootProject.name = "GigGO"
 include(":app")
+ 
