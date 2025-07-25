@@ -1,4 +1,4 @@
-package com.example.kotlinsample
+package com.coffeeforme.coffeee
 
 import org.junit.Test
 
